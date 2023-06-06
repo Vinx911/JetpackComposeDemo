@@ -45,17 +45,22 @@ fun MainScreen() {
             "https://images.pexels.com/photos/4552789/pexels-photo-4552789.jpeg?auto=compress&cs=tinysrgb&fm=jpg&w=640&h=960",
         )
     }
+    val imageCount = images.count()
+    val dummyPageCount = Int.MAX_VALUE
 
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(
+        initialPage = (dummyPageCount / imageCount / 2) * imageCount
+    )
     val matrix = remember { ColorMatrix() }
 
     Scaffold(modifier = Modifier.padding(vertical = 48.dp)) {
         HorizontalPager(
-            pageCount = images.size,
+            pageCount = dummyPageCount,
             state = pagerState
-        ) { index ->
-            val pagerOffset =
-                (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+        ) { dummyIndex ->
+            val index = dummyIndex % imageCount
+            val currentIndex = pagerState.currentPage % imageCount
+            val pagerOffset = (currentIndex - index) + pagerState.currentPageOffsetFraction
             val imageSize by animateFloatAsState(
                 targetValue = if (pagerOffset != 0.0f) 0.75f else 1f,
                 animationSpec = tween(durationMillis = 300)
